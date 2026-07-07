@@ -1,0 +1,68 @@
+project:
+  name: vic-egarch-gbm
+  random_state: 42
+
+data:
+  stock_csv: data/raw/VIC.csv
+  market_csv: null
+  date_col: date
+  price_col: adj_close
+  fallback_price_col: close
+
+target:
+  horizon: 1
+  name: target_return_next_1d
+
+features:
+  return_lags: [1, 2, 3, 5, 10, 20]
+  rolling_windows: [5, 10, 20, 60]
+  rsi_windows: [14]
+  add_calendar: true
+  add_market_features: true
+
+egarch:
+  enabled: true
+  method: walk_forward
+  p: 1
+  o: 1
+  q: 1
+  dist: normal
+  min_obs: 500
+  max_train_window: 1000
+
+split:
+  train_size: 0.70
+  valid_size: 0.15
+  test_size: 0.15
+
+models:
+  xgboost:
+    enabled: true
+    params:
+      n_estimators: 500
+      max_depth: 3
+      learning_rate: 0.03
+      subsample: 0.85
+      colsample_bytree: 0.85
+      objective: reg:squarederror
+      eval_metric: rmse
+  lightgbm:
+    enabled: true
+    params:
+      n_estimators: 500
+      max_depth: -1
+      learning_rate: 0.03
+      num_leaves: 31
+      subsample: 0.85
+      colsample_bytree: 0.85
+      objective: regression
+
+backtest:
+  enabled: true
+  signal_threshold: 0.0
+  transaction_cost_bps: 15
+
+outputs:
+  processed_dir: data/processed
+  model_dir: models
+  report_dir: reports

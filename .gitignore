@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+.repo_git/
+data/raw/*.csv
+data/processed/*.csv
+models/*.pkl
+reports/*.csv
+reports/*.json
+reports/figures/
